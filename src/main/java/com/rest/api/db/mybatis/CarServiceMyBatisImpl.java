@@ -17,7 +17,7 @@ public class CarServiceMyBatisImpl implements CarService {
 	@Autowired
 	private CarDaoMapper carMapper;
 
-	public Car getCar(long id) throws CarNotFoundException {
+	public Car findById(long id) throws CarNotFoundException {
 		Car car = carMapper.getCar(id);
 		if (car == null)
 			throw new CarNotFoundException();
@@ -25,12 +25,12 @@ public class CarServiceMyBatisImpl implements CarService {
 			return car;
 	}
 
-	public Car addCar(Car car) {
+	public Car add(Car car) {
 		carMapper.addCar(car);
 		return car;
 	}
 
-	public void updateCar(long id, Car car) throws CarNotFoundException {
+	public void update(long id, Car car) throws CarNotFoundException {
 		Car findCar = carMapper.getCar(id);
 		if (findCar == null)
 			throw new CarNotFoundException();
@@ -38,18 +38,12 @@ public class CarServiceMyBatisImpl implements CarService {
 			carMapper.updateCar(id, car);
 	}
 
-	public boolean deleteCar(long id) {
+	public boolean deleteById(long id) {
 		return carMapper.deleteCar(id);
 	}
 
-	public Collection<Car> listCars() {
+	public Collection<Car> findAll() {
 		return carMapper.listCars();
-	}
-	
-	@Transactional
-	public void test() {
-		carMapper.addCar(new Car(0, "A", "B", 0));
-		throw new RuntimeException();
 	}
 
 }

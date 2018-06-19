@@ -27,7 +27,7 @@ public class CarServiceTest {
 
 	@Test
 	public void getCar() throws Exception {
-		Car car = carService.getCar(3);
+		Car car = carService.findById(3);
 		Assert.assertEquals(3, car.getId());
 		Assert.assertEquals("Mercedes", car.getBrand());
 		Assert.assertEquals("A 220d", car.getModel());
@@ -36,7 +36,7 @@ public class CarServiceTest {
 	
 	@Test(expected = CarNotFoundException.class)
 	public void getCarNotFound() throws Exception {
-		carService.getCar(99);
+		carService.findById(99);
 	}
 	
 	@Test
@@ -46,10 +46,10 @@ public class CarServiceTest {
 		car.setModel("Model");
 		car.setVersion(1);
 
-		carService.addCar(car);
+		carService.add(car);
 		Assert.assertNotNull(car.getId());
 
-		Car ins = carService.getCar(car.getId());
+		Car ins = carService.findById(car.getId());
 		Assert.assertEquals(car.getBrand(), ins.getBrand());
 		Assert.assertEquals(car.getModel(), ins.getModel());
 		Assert.assertEquals(car.getVersion(), ins.getVersion());
@@ -57,14 +57,14 @@ public class CarServiceTest {
 
 	@Test
 	public void updateCar() throws Exception {
-		Car car = carService.getCar(2);
+		Car car = carService.findById(2);
 		car.setBrand("Brand");
 		car.setModel("Model");
 		car.setVersion(0);
 
-		carService.updateCar(2, car);
+		carService.update(2, car);
 
-		Car upd = carService.getCar(2);
+		Car upd = carService.findById(2);
 		Assert.assertEquals(car.getBrand(), upd.getBrand());
 		Assert.assertEquals(car.getModel(), upd.getModel());
 		Assert.assertEquals(car.getVersion(), upd.getVersion());
@@ -78,26 +78,26 @@ public class CarServiceTest {
 		car.setModel("Model");
 		car.setVersion(0);
 
-		carService.updateCar(car.getId(), car);
+		carService.update(car.getId(), car);
 	}
 
 	@Test
 	public void deleteCar() {
 		boolean isDel;
-		isDel = carService.deleteCar(2);
+		isDel = carService.deleteById(2);
 		Assert.assertTrue(isDel);
 	}
 	
 	@Test
 	public void deleteCarNotFound() {
 		boolean isDel;
-		isDel = carService.deleteCar(99);
+		isDel = carService.deleteById(99);
 		Assert.assertFalse(isDel);
 	}
 
 	@Test
 	public void listCars() {
-		Collection<Car> carList = carService.listCars();
+		Collection<Car> carList = carService.findAll();
 		Assert.assertEquals(3, carList.size());
 
 		for (Car c : carList) {
