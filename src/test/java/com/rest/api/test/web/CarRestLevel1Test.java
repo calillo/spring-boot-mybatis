@@ -1,6 +1,7 @@
 package com.rest.api.test.web;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
@@ -96,11 +97,10 @@ public class CarRestLevel1Test {
 		//when
 		MockHttpServletResponse response;
 		response = mockMvc.perform(get(ApiRest.API_PATH + "/cars")).andReturn().getResponse();
-		
+
 		//then
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo(
-                jsonCars.write(carList).getJson());
+		assertThat(response.getStatus(), equalTo(HttpStatus.OK.value()));
+        assertThat(response.getContentAsString(), equalTo(jsonCars.write(carList).getJson()));
 		
 	}
 }
