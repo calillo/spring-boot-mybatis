@@ -1,9 +1,22 @@
 package com.rest.api.model;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
+
 public class Car {
+	
 	public long id;
+	
+	//@Size(min = 1, max = 10, message = "Size.car.brand")
+	@Size(min = 1, max = 10)
 	public String brand;
+	
+	@NotNull(message = "{my.notnull}" )
 	public String model;
+	
+	//@PositiveOrZero(message = "PositiveOrZero.car.version")
+	@PositiveOrZero
 	public int version;
 	
 	public Car() {
