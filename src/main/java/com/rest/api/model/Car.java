@@ -1,34 +1,55 @@
 package com.rest.api.model;
 
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Car {
 	
-	public long id;
+	private long id;
 	
-	//@Size(min = 1, max = 10, message = "Size.car.brand")
-	@Size(min = 1, max = 10)
-	public String brand;
+	@NotNull
+	@Size(min = 0, max = 10)
+	private String brand;
 	
-	@NotNull(message = "{my.notnull}" )
-	public String model;
+	@NotNull
+	@Size(min = 0, max = 10)
+	private String model;
 	
-	//@PositiveOrZero(message = "PositiveOrZero.car.version")
 	@PositiveOrZero
-	public int version;
+	private int version;
+	
+	@NotNull
+	@PositiveOrZero
+	@Digits(integer = 10, fraction = 2)
+	private BigDecimal price;
+	
+	@JsonIgnore
+	private ZonedDateTime insertDate;
+	@JsonIgnore
+	private ZonedDateTime updateDate;
 	
 	public Car() {
 	}
 	
-	public Car(long id, String brand, String model, int version) {
+	public Car(long id, String brand, String model, int version, BigDecimal price, ZonedDateTime insertDate,
+			ZonedDateTime updateDate) {
 		super();
 		this.id = id;
 		this.brand = brand;
 		this.model = model;
 		this.version = version;
+		this.price = price;
+		this.insertDate = insertDate;
+		this.updateDate = updateDate;
 	}
+
 	public long getId() {
 		return id;
 	}
@@ -52,5 +73,29 @@ public class Car {
 	}
 	public void setVersion(int version) {
 		this.version = version;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+
+	public ZonedDateTime getInsertDate() {
+		return insertDate;
+	}
+
+	public void setInsertDate(ZonedDateTime insertDate) {
+		this.insertDate = insertDate;
+	}
+
+	public ZonedDateTime getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(ZonedDateTime updateDate) {
+		this.updateDate = updateDate;
 	}
 }

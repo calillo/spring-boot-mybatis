@@ -1,5 +1,6 @@
 package com.rest.api.db.mybatis;
 
+import java.time.ZonedDateTime;
 import java.util.Collection;
 
 import javax.validation.Valid;
@@ -35,6 +36,7 @@ public class CarServiceMyBatisImpl implements CarService {
 
 	public void update(long id, @Valid Car car) throws CarNotFoundException {
 		Car findCar = carMapper.getCar(id);
+		car.setUpdateDate(ZonedDateTime.now());
 		if (findCar == null)
 			throw new CarNotFoundException();
 		else

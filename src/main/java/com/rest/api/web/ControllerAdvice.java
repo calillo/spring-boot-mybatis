@@ -1,14 +1,10 @@
 package com.rest.api.web;
 
-import java.util.List;
 import java.util.Locale;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -27,15 +23,11 @@ import com.rest.api.model.error.ValidationError;
 @RestControllerAdvice
 public class ControllerAdvice {
 	
+	private static final String VALIDATION_ERROR = "exception.validation";
+	private static final String INTERNAL_SERVER_ERROR = "exception.internal.server.error";
+	
 	@Autowired
 	private MessageSource messageSource;
-	
-	/*
-	@Autowired
-    public ControllerAdvice(MessageSource messageSource) {
-        this.messageSource = messageSource;
-    }
-	*/
 	
 	@ResponseBody
 	@ExceptionHandler(CarNotFoundException.class)
@@ -49,19 +41,12 @@ public class ControllerAdvice {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ValidationError handleMethodArgumentNotValid(MethodArgumentNotValidException ex, Locale locale) {
 		BindingResult result = ex.getBindingResult();
-		ValidationError ve = new ValidationError(100, "Validation Error");
+		ValidationError ve = new ValidationError(100, messageSource.getMessage(VALIDATION_ERROR, null, locale));
+		
 		for (org.springframework.validation.FieldError oe : result.getFieldErrors()) {
-			//ve.addFieldError(new FieldError(1, oe.getField(), oe.));
 			ve.addFieldError(new FieldError(1, oe.getField(), messageSource.getMessage(oe, locale)));
 		}
-        /*List<String> errorMessages = result.getAllErrors()
-                .stream()
-                .map(objectError -> messageSource.getMessage(objectError, locale))
-                .collect(Collectors.toList());
-        for (String string : errorMessages) {
-			ve.addFieldError(new FieldError(1, string));
-		}
-		*/
+		
 		return ve;
 	}
 		
@@ -69,9 +54,18 @@ public class ControllerAdvice {
 	@ExceptionHandler(ConstraintViolationException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ValidationError handleConstraintViolationException(ConstraintViolationException ex, Locale locale) {
-		ValidationError ve = new ValidationError(100, "Validation Error");
+		ValidationError ve = new ValidationError(100, messageSource.getMessage(VALIDATION_ERROR, null, locale));
+		String field = "";
+		int index;
+		
 		for (ConstraintViolation<?> cv : ex.getConstraintViolations()) {
-			String field = StringUtils.substringAfter(cv.getPropertyPath().toString(), ".");
+			index = cv.getPropertyPath().toString().lastIndexOf(".");
+			
+			if(index == -1)
+				field = cv.getPropertyPath().toString();
+			else
+				field = cv.getPropertyPath().toString().substring(cv.getPropertyPath().toString().lastIndexOf(".")+1);
+				
 			//ve.addFieldError(new FieldError(1, field, messageSource.getMessage(cv.getMessageTemplate(), null, locale)));
 			ve.addFieldError(new FieldError(1, field, cv.getMessage()));
 		};
@@ -82,29 +76,9 @@ public class ControllerAdvice {
 	@ResponseBody
 	@ExceptionHandler(Exception.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	public Error handleAllExceptions(Exception ex) {
+	public Error handleAllExceptions(Exception ex, Locale locale) {
 		//TODO Hide Exception message
-		return new Error(999, "Intern Server Error");
+		return new Error(999, messageSource.getMessage(INTERNAL_SERVER_ERROR, null, locale));
 	}
-	
-	/*
-	public static List<FieldError> getErrors(
-			Set<ConstraintViolation<?>> constraintViolations) {
-		
-		return constraintViolations.stream()
-				.map(FieldError::of).collect(Collectors.toList());	
-	}
-	
-	private static FieldError of(ConstraintViolation<?> constraintViolation) {
-		
-		// Get the field name by removing the first part of the propertyPath.
-		// (The first part would be the service method name)
-		String field = StringUtils.substringAfter(
-				constraintViolation.getPropertyPath().toString(), ".");
-		
-		return new FieldError(field,
-				constraintViolation.getMessageTemplate(),
-				constraintViolation.getMessage());		
-	}
-	*/
+
 }

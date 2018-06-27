@@ -25,7 +25,7 @@ public class TransactionService {
 	
 	@Transactional
 	public void test() {
-		carMapper.addCar(new Car(0, "A", "B", 0));
+		carMapper.addCar(new Car(0, "A", "B", 0, new BigDecimal(1000.00), null, null));
 		
 		Field field = new Field("insert", (short)1, 2, (long)3, (float)4.1, 5.1, new BigDecimal("6.002"), "", new byte[0], LocalDate.now(), LocalTime.now(), ZonedDateTime.now());
 		field.setfString("insert");

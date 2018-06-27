@@ -3,8 +3,6 @@ package com.rest.api.web;
 import java.net.URI;
 import java.util.Collection;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +36,7 @@ public class CarRest extends ApiRest {
 	}
 
 	@PostMapping(value = "cars", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> addCar(@Valid @RequestBody Car car) {
+	public ResponseEntity<String> addCar(@RequestBody Car car) {
 		carService.add(car);
 
 		URI location = ServletUriComponentsBuilder

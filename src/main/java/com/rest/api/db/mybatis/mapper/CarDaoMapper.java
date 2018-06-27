@@ -21,15 +21,17 @@ public interface CarDaoMapper extends Serializable {
 			+ "WHERE id = #{id}")
 	public Car getCar(long id);
 
-	@Insert(  "INSERT INTO CAR (BRAND, MODEL, VERSION) "
-			+ "VALUES (#{brand}, #{model}, #{version})")
+	@Insert(  "INSERT INTO CAR (BRAND, MODEL, VERSION, PRICE) "
+			+ "VALUES (#{brand}, #{model}, #{version}, #{price})")
 	@Options(useGeneratedKeys = true, keyProperty = "id")
 	public void addCar(Car car);
 	
 	@Update(  "UPDATE CAR "
 			+ "SET BRAND = #{car.brand},"
 			+ "    MODEL = #{car.model}, "
-			+ "    VERSION = #{car.version} "
+			+ "    VERSION = #{car.version}, "
+			+ "    PRICE = #{car.price}, "
+			+ "    UPDATE_DATE = #{car.updateDate} "
 			+ "WHERE ID = #{id}")
 	public void updateCar(@Param("id") long id, @Param("car") Car car);
 

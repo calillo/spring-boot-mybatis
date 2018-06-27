@@ -4,6 +4,8 @@ import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.BDDMockito.given;
 
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,8 +49,8 @@ public class CarRestLevel3Test {
         // Initializes the JacksonTester
         JacksonTester.initFields(this, new ObjectMapper());
         
-        carList.add(new Car(1, "BMW", "320d", 0));
-        carList.add(new Car(2, "Audi", "A3 2.0 TDI", 0));
+        carList.add(new Car(1, "BMW", "320d", 0, new BigDecimal("40000.00"), ZonedDateTime.now(), ZonedDateTime.now()));
+        carList.add(new Car(2, "Audi", "A3 2.0 TDI", 0, new BigDecimal("35000.00"), ZonedDateTime.now(), ZonedDateTime.now()));
     }
 	
 	@Test

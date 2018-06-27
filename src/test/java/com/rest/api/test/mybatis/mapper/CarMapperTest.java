@@ -1,6 +1,10 @@
 package com.rest.api.test.mybatis.mapper;
 
-import org.junit.Assert;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+import java.math.BigDecimal;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -20,9 +24,10 @@ public class CarMapperTest {
 	@Test
 	public void findById() throws Exception {
 		Car car = carMapper.getCar(3);
-		Assert.assertEquals(3, car.getId());
-		Assert.assertEquals("Mercedes", car.getBrand());
-		Assert.assertEquals("A 220d", car.getModel());
-		Assert.assertEquals(0, car.getVersion());
+		assertThat(3L, equalTo(car.getId()));
+		assertThat("Mercedes", equalTo(car.getBrand()));
+		assertThat("A 220d", equalTo(car.getModel()));
+		assertThat(0, equalTo(car.getVersion()));
+		assertThat(new BigDecimal("25000.00"), equalTo(car.getPrice()));
 	}
 }

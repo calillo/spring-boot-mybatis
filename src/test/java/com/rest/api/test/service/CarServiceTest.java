@@ -1,7 +1,13 @@
 package com.rest.api.test.service;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 
+import org.exparity.hamcrest.date.ZonedDateTimeMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,10 +34,11 @@ public class CarServiceTest {
 	@Test
 	public void getCar() throws Exception {
 		Car car = carService.findById(3);
-		Assert.assertEquals(3, car.getId());
-		Assert.assertEquals("Mercedes", car.getBrand());
-		Assert.assertEquals("A 220d", car.getModel());
-		Assert.assertEquals(0, car.getVersion());
+		assertThat(3L, equalTo(car.getId()));
+		assertThat("Mercedes", equalTo(car.getBrand()));
+		assertThat("A 220d", equalTo(car.getModel()));
+		assertThat(0, equalTo(car.getVersion()));
+		assertThat(new BigDecimal("25000.00"), equalTo(car.getPrice()));
 	}
 	
 	@Test(expected = CarNotFoundException.class)
@@ -45,14 +52,20 @@ public class CarServiceTest {
 		car.setBrand("Brand");
 		car.setModel("Model");
 		car.setVersion(1);
+		car.setPrice(new BigDecimal("1000.00"));
 
 		carService.add(car);
-		Assert.assertNotNull(car.getId());
+		assertThat(car.getId(), notNullValue());
 
 		Car ins = carService.findById(car.getId());
-		Assert.assertEquals(car.getBrand(), ins.getBrand());
-		Assert.assertEquals(car.getModel(), ins.getModel());
-		Assert.assertEquals(car.getVersion(), ins.getVersion());
+		assertThat(car.getBrand(), equalTo(ins.getBrand()));
+		assertThat(car.getModel(), equalTo(ins.getModel()));
+		assertThat(car.getVersion(), equalTo(ins.getVersion()));
+		assertThat(car.getPrice(), equalTo(ins.getPrice()));
+		assertThat(ins.getInsertDate(), notNullValue());
+		assertThat(ins.getUpdateDate(), notNullValue());
+		assertThat(ins.getInsertDate(), ZonedDateTimeMatchers.before(ZonedDateTime.now()));
+		assertThat(ins.getUpdateDate(), ZonedDateTimeMatchers.before(ZonedDateTime.now()));
 	}
 
 	@Test
@@ -61,13 +74,19 @@ public class CarServiceTest {
 		car.setBrand("Brand");
 		car.setModel("Model");
 		car.setVersion(0);
+		car.setPrice(new BigDecimal("1000.00"));
 
 		carService.update(2, car);
 
 		Car upd = carService.findById(2);
-		Assert.assertEquals(car.getBrand(), upd.getBrand());
-		Assert.assertEquals(car.getModel(), upd.getModel());
-		Assert.assertEquals(car.getVersion(), upd.getVersion());
+		assertThat(car.getBrand(), equalTo(upd.getBrand()));
+		assertThat(car.getModel(), equalTo(upd.getModel()));
+		assertThat(car.getVersion(), equalTo(upd.getVersion()));
+		assertThat(car.getPrice(), equalTo(upd.getPrice()));
+		assertThat(car.getInsertDate(), is(notNullValue()));
+		assertThat(car.getUpdateDate(), is(notNullValue()));
+		assertThat(car.getUpdateDate(), ZonedDateTimeMatchers.after(car.getInsertDate()));
+		assertThat(car.getUpdateDate(), ZonedDateTimeMatchers.before(ZonedDateTime.now()));
 	}
 	
 	@Test(expected = CarNotFoundException.class)
@@ -77,6 +96,7 @@ public class CarServiceTest {
 		car.setBrand("Brand");
 		car.setModel("Model");
 		car.setVersion(0);
+		car.setPrice(new BigDecimal("1000.00"));
 
 		carService.update(car.getId(), car);
 	}
@@ -85,40 +105,43 @@ public class CarServiceTest {
 	public void deleteCar() {
 		boolean isDel;
 		isDel = carService.deleteById(2);
-		Assert.assertTrue(isDel);
+		assertThat(isDel, is(true));
 	}
 	
 	@Test
 	public void deleteCarNotFound() {
 		boolean isDel;
 		isDel = carService.deleteById(99);
-		Assert.assertFalse(isDel);
+		assertThat(isDel, is(false));
 	}
 
 	@Test
 	public void listCars() {
 		Collection<Car> carList = carService.findAll();
-		Assert.assertEquals(3, carList.size());
+		assertThat(3, equalTo(carList.size()));
 
 		for (Car c : carList) {
 			switch ((int) c.getId()) {
 			case 1:
-				Assert.assertEquals("BMW", c.getBrand());
-				Assert.assertEquals("320d", c.getModel());
-				Assert.assertEquals(1, c.getVersion());
+				assertThat("BMW", equalTo(c.getBrand()));
+				assertThat("320d", equalTo(c.getModel()));
+				assertThat(1, equalTo(c.getVersion()));
+				assertThat(new BigDecimal("40000.00"), equalTo(c.getPrice()));
 				break;
 			case 2:
-				Assert.assertEquals("Audi", c.getBrand());
-				Assert.assertEquals("A3 2.0 TDI", c.getModel());
-				Assert.assertEquals(0, c.getVersion());
+				assertThat("Audi", equalTo(c.getBrand()));
+				assertThat("A3 2.0 TDI", equalTo(c.getModel()));
+				assertThat(0, equalTo(c.getVersion()));
+				assertThat(new BigDecimal("35000.00"), equalTo(c.getPrice()));
 				break;
 			case 3:
-				Assert.assertEquals("Mercedes", c.getBrand());
-				Assert.assertEquals("A 220d", c.getModel());
-				Assert.assertEquals(0, c.getVersion());
+				assertThat("Mercedes", equalTo(c.getBrand()));
+				assertThat("A 220d", equalTo(c.getModel()));
+				assertThat(0, equalTo(c.getVersion()));
+				assertThat(new BigDecimal("25000.00"), equalTo(c.getPrice()));
 				break;
 			default:
-				Assert.fail();
+				fail();
 				break;
 			}
 		}
